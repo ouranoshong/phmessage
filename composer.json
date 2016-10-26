@@ -1,0 +1,20 @@
+{
+    "name": "phmessage/phmessage",
+    "description": "A psr7 http message implementation.",
+    "type": "Library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ouranoshong",
+            "email": "ouranoshong@outlook.com"
+        }
+    ],
+    "require": {
+        "psr/http-message": "^1.0"
+    } ,
+    "autoload": {
+        "psr-4": {
+            "PhMessage\\": "./libs"
+        }
+    }
+}
