@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 16-10-26
- * Time: 下午10:18
+ * Time: 下午10:18.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -16,33 +15,127 @@ class Request implements RequestInterface
 {
     use handleMessage;
 
+    /** @var string */
+    private $method;
+
+    /** @var null|string */
+    private $requestTarget;
+
+    /** @var null|UriInterface */
+    private $uri;
+
+    public function __construct(
+        $method,
+        $uri,
+        array $headers = [],
+        $body = null,
+        $version = '1.1'
+    ) {
+        if (!($uri instanceof UriInterface)) {
+            $uri = new Uri($uri);
+        }
+
+        $this->method = strtoupper($method);
+        $this->uri = $uri;
+        $this->setHeaders($headers);
+        $this->protocol = $version;
+
+        if (!$this->hasHeader('Host')) {
+            $this->updateHostFromUri();
+        }
+
+        if ($body !== '' && $body !== null) {
+            $this->stream = stream_for($body);
+        }
+    }
+
     public function getRequestTarget()
     {
-        // TODO: Implement getRequestTarget() method.
+        if ($this->requestTarget !== null) {
+            return $this->requestTarget;
+        }
+
+        $target = $this->uri->getPath();
+
+        if ($target == '') {
+            $target = '/';
+        }
+
+        if ($this->uri->getQuery() != '') {
+            $target .= '?'.$this->uri->getQuery();
+        }
+
+        return $target;
     }
 
     public function withRequestTarget($requestTarget)
     {
-        // TODO: Implement withRequestTarget() method.
+        if (preg_match('#\s#', $requestTarget)) {
+            throw new InvalidArgumentException(
+                'Invalid request target provided; cannot contain whitespace'
+            );
+        }
+
+        $new = clone $this;
+        $new->requestTarget = $requestTarget;
+
+        return $new;
     }
 
     public function getMethod()
     {
-        // TODO: Implement getMethod() method.
+        return $this->method;
     }
 
     public function withMethod($method)
     {
-        // TODO: Implement withMethod() method.
+        $new = clone $this;
+        $new->method = strtoupper($method);
+
+        return $new;
     }
 
     public function getUri()
     {
-        // TODO: Implement getUri() method.
+        return $this->uri;
     }
 
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        // TODO: Implement withUri() method.
+        if ($uri === $this->uri) {
+            return $this;
+        }
+
+        $new = clone $this;
+        $new->uri = $uri;
+
+        if (!$preserveHost) {
+            $new->updateHostFromUri();
+        }
+
+        return $new;
+    }
+
+    protected function updateHostFromUri()
+    {
+        $host = $this->uri->getHost();
+
+        if ($host == '') {
+            return;
+        }
+
+        if (($port = $this->uri->getPort()) !== null) {
+            $host .= ':'.$port;
+        }
+
+        if (isset($this->headerNames['host'])) {
+            $header = $this->headerNames['host'];
+        } else {
+            $header = 'Host';
+            $this->headerNames['host'] = 'Host';
+        }
+        // Ensure Host is the first header.
+        // See: http://tools.ietf.org/html/rfc7230#section-5.4
+        $this->headers = [$header => [$host]] + $this->headers;
     }
 }

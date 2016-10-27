@@ -10,7 +10,7 @@ namespace PhMessage;
 
 use Psr\Http\Message\UriInterface;
 
-class Uri  implements UriInterface
+class Uri implements UriInterface
 {
     protected static $schemes = [
         'http' => 80,

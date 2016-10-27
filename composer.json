@@ -15,6 +15,7 @@
     "autoload": {
         "psr-4": {
             "PhMessage\\": "./libs"
-        }
+        },
+        "files": ["libs/functions_include.php"]
     }
 }

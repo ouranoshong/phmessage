@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 16-10-26
- * Time: 下午10:20
+ * Time: 下午10:20.
  */
 
 namespace PhMessage;
@@ -12,17 +12,28 @@ use Psr\Http\Message\StreamInterface;
 
 trait handleMessage
 {
+    /** @var array Map of all registered headers, as original name => array of values */
+    protected $headers = [];
+
+    /** @var array Map of lowercase header name => original name at registration */
+    protected $headerNames = [];
+
+    /** @var string */
+    protected $protocol = '1.1';
+
+    /** @var StreamInterface */
+    protected $stream;
 
     /**
      * Retrieves the HTTP protocol version as a string.
      *
      * The string MUST contain only the HTTP version number (e.g., "1.1", "1.0").
      *
-     * @return string HTTP protocol version.
+     * @return string HTTP protocol version
      */
     public function getProtocolVersion()
     {
-        // TODO: Implement getProtocolVersion() method.
+        return $this->protocol;
     }
 
     /**
@@ -41,7 +52,14 @@ trait handleMessage
      */
     public function withProtocolVersion($version)
     {
-        // TODO: Implement withProtocolVersion() method.
+        if ($this->protocol === $version) {
+            return $this;
+        }
+
+        $new = clone $this;
+        $new->protocol = $version;
+
+        return $new;
     }
 
     /**
@@ -66,26 +84,26 @@ trait handleMessage
      * exact case in which headers were originally specified.
      *
      * @return string[][] Returns an associative array of the message's headers. Each
-     *     key MUST be a header name, and each value MUST be an array of strings
-     *     for that header.
+     *                    key MUST be a header name, and each value MUST be an array of strings
+     *                    for that header
      */
     public function getHeaders()
     {
-        // TODO: Implement getHeaders() method.
+        return $this->headers;
     }
 
     /**
      * Checks if a header exists by the given case-insensitive name.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $name Case-insensitive header field name
      *
      * @return bool Returns true if any header names match the given header
-     *     name using a case-insensitive string comparison. Returns false if
-     *     no matching header name is found in the message.
+     *              name using a case-insensitive string comparison. Returns false if
+     *              no matching header name is found in the message
      */
     public function hasHeader($name)
     {
-        // TODO: Implement hasHeader() method.
+        return isset($this->headerNames[strtolower($name)]);
     }
 
     /**
@@ -97,15 +115,19 @@ trait handleMessage
      * If the header does not appear in the message, this method MUST return an
      * empty array.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $name Case-insensitive header field name
      *
      * @return string[] An array of string values as provided for the given
-     *    header. If the header does not appear in the message, this method MUST
-     *    return an empty array.
+     *                  header. If the header does not appear in the message, this method MUST
+     *                  return an empty array
      */
     public function getHeader($name)
     {
-        // TODO: Implement getHeader() method.
+        if ($this->hasHeader($name)) {
+            return $this->headers[$this->headerNames[strtolower($name)]];
+        }
+
+        return [];
     }
 
     /**
@@ -122,15 +144,15 @@ trait handleMessage
      * If the header does not appear in the message, this method MUST return
      * an empty string.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $name Case-insensitive header field name
      *
      * @return string A string of values as provided for the given header
-     *    concatenated together using a comma. If the header does not appear in
-     *    the message, this method MUST return an empty string.
+     *                concatenated together using a comma. If the header does not appear in
+     *                the message, this method MUST return an empty string
      */
     public function getHeaderLine($name)
     {
-        // TODO: Implement getHeaderLine() method.
+        return implode(', ', $this->getHeader($name));
     }
 
     /**
@@ -143,15 +165,32 @@ trait handleMessage
      * immutability of the message, and MUST return an instance that has the
      * new and/or updated header and value.
      *
-     * @param string          $name  Case-insensitive header field name.
-     * @param string|string[] $value Header value(s).
+     * @param string          $name  Case-insensitive header field name
+     * @param string|string[] $value Header value(s)
      *
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     *
+     * @throws \InvalidArgumentException for invalid header names or values
      */
     public function withHeader($name, $value)
     {
-        // TODO: Implement withHeader() method.
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $value = $this->trimHeaderValues($value);
+        $normalized = strtolower($name);
+
+        $new = clone $this;
+
+        if (isset($new->headerNames[$normalized])) {
+            unset($new->headers[$new->headerNames[$normalized]]);
+        }
+
+        $new->headerNames[$normalized] = $name;
+        $new->headers[$name] = $value;
+
+        return $new;
     }
 
     /**
@@ -165,15 +204,32 @@ trait handleMessage
      * immutability of the message, and MUST return an instance that has the
      * new header and/or value.
      *
-     * @param string          $name  Case-insensitive header field name to add.
-     * @param string|string[] $value Header value(s).
+     * @param string          $name  Case-insensitive header field name to add
+     * @param string|string[] $value Header value(s)
      *
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     *
+     * @throws \InvalidArgumentException for invalid header names or values
      */
     public function withAddedHeader($name, $value)
     {
-        // TODO: Implement withAddedHeader() method.
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $value = $this->trimHeaderValues($value);
+        $normalized = strtolower($name);
+
+        $new = clone $this;
+        if (isset($new->headerNames[$normalized])) {
+            $header = $this->headerNames[$normalized];
+            $new->headers[$header] = array_merge($this->headers[$name], $value);
+        } else {
+            $new->headerNames[$normalized] = $name;
+            $new->headers[$name] = $value;
+        }
+
+        return $new;
     }
 
     /**
@@ -185,23 +241,38 @@ trait handleMessage
      * immutability of the message, and MUST return an instance that removes
      * the named header.
      *
-     * @param string $name Case-insensitive header field name to remove.
+     * @param string $name Case-insensitive header field name to remove
      *
      * @return static
      */
     public function withoutHeader($name)
     {
-        // TODO: Implement withoutHeader() method.
+        $normalized = strtolower($name);
+
+        if (!isset($this->headerNames[$normalized])) {
+            return $this;
+        }
+
+        $name = $this->headerNames[$normalized];
+
+        $new = clone $this;
+        unset($new->headers[$name], $new->headerNames[$normalized]);
+
+        return $new;
     }
 
     /**
      * Gets the body of the message.
      *
-     * @return StreamInterface Returns the body as a stream.
+     * @return StreamInterface Returns the body as a stream
      */
     public function getBody()
     {
-        // TODO: Implement getBody() method.
+        if (!$this->stream) {
+            $this->stream = stream_for('');
+        }
+
+        return $this->stream;
     }
 
     /**
@@ -213,13 +284,52 @@ trait handleMessage
      * immutability of the message, and MUST return a new instance that has the
      * new body stream.
      *
-     * @param StreamInterface $body Body.
+     * @param StreamInterface $body Body
      *
      * @return static
-     * @throws \InvalidArgumentException When the body is not valid.
+     *
+     * @throws \InvalidArgumentException When the body is not valid
      */
     public function withBody(StreamInterface $body)
     {
-        // TODO: Implement withBody() method.
+        if ($body === $this->stream) {
+            return $this;
+        }
+
+        $new = clone $this;
+        $new->stream = $body;
+
+        return $new;
+    }
+
+    protected function setHeaders(array $headers)
+    {
+        $this->headerNames = $this->headers = [];
+
+        foreach($headers as $header => $value) {
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+
+            $value = $this->trimHeaderValues($value);
+
+            $normalized = strtolower($header);
+
+            if (isset($this->headerNames[$normalized])) {
+                $header = $this->headerNames[$normalized];
+                $this->headers[$header] = array_merge($this->headers[$header], $value);
+            } else {
+                $this->headerNames[$normalized] = $header;
+                $this->headers[$header] = $value;
+            }
+
+        }
+    }
+
+    protected function trimHeaderValues(array $values)
+    {
+        return array_map(function ($value) {
+            return trim($value, " \t");
+        }, $values);
     }
 }
