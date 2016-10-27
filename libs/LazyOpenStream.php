@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 4:21 PM
+ * Time: 4:21 PM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -33,5 +32,4 @@ class LazyOpenStream implements StreamInterface
     {
         return stream_for(try_fopen($this->filename, $this->mode));
     }
-
 }

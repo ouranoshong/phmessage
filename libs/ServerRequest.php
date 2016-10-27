@@ -3,18 +3,16 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 4:26 PM
+ * Time: 4:26 PM.
  */
 
 namespace PhMessage;
 
-
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
-class ServerRequest extends Request  implements ServerRequestInterface 
+class ServerRequest extends Request implements ServerRequestInterface
 {
-
     /**
      * @var array
      */
@@ -94,10 +92,10 @@ class ServerRequest extends Request  implements ServerRequestInterface
         foreach (array_keys($files['tmp_name']) as $key) {
             $spec = [
                 'tmp_name' => $files['tmp_name'][$key],
-                'size'     => $files['size'][$key],
-                'error'    => $files['error'][$key],
-                'name'     => $files['name'][$key],
-                'type'     => $files['type'][$key],
+                'size' => $files['size'][$key],
+                'error' => $files['error'][$key],
+                'name' => $files['name'][$key],
+                'type' => $files['type'][$key],
             ];
             $normalizedFiles[$key] = self::createUploadedFileFromSpec($spec);
         }
@@ -113,7 +111,7 @@ class ServerRequest extends Request  implements ServerRequestInterface
         $body = new LazyOpenStream('php://input', 'r+');
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
 
-        $serverRequest = new ServerRequest($method, $uri, $headers, $body, $protocol, $_SERVER);
+        $serverRequest = new self($method, $uri, $headers, $body, $protocol, $_SERVER);
 
         return $serverRequest
             ->withCookieParams($_COOKIE)
@@ -122,7 +120,8 @@ class ServerRequest extends Request  implements ServerRequestInterface
             ->withUploadedFiles(self::normalizeFiles($_FILES));
     }
 
-    public static function getUriFromGlobals() {
+    public static function getUriFromGlobals()
+    {
         $uri = new Uri('');
 
         if (isset($_SERVER['HTTPS'])) {
@@ -240,5 +239,4 @@ class ServerRequest extends Request  implements ServerRequestInterface
 
         return $new;
     }
-
 }

@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 4:07 PM
+ * Time: 4:07 PM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -69,8 +68,7 @@ class UploadedFile implements UploadedFileInterface
         $errorStatus,
         $clientFilename = null,
         $clientMediaType = null
-    )
-    {
+    ) {
         $this->setError($errorStatus);
         $this->setSize($size);
         $this->setClientFilename($clientFilename);
@@ -81,12 +79,13 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    protected function setStreamOrFile($streamOrFile) {
+    protected function setStreamOrFile($streamOrFile)
+    {
         if (is_string($streamOrFile)) {
             $this->file = $streamOrFile;
-        } else if (is_resource($streamOrFile)) {
+        } elseif (is_resource($streamOrFile)) {
             $this->stream = new Stream($streamOrFile);
-        } else if ($streamOrFile instanceof StreamInterface) {
+        } elseif ($streamOrFile instanceof StreamInterface) {
             $this->stream = $streamOrFile;
         } else {
             throw new \InvalidArgumentException(
@@ -103,7 +102,7 @@ class UploadedFile implements UploadedFileInterface
             );
         }
 
-        if (false === is_array($error, UploadedFile::$errors)) {
+        if (false === is_array($error, self::$errors)) {
             throw new \InvalidArgumentException(
                 'Invalid error status for UploadedFile'
             );
@@ -155,7 +154,8 @@ class UploadedFile implements UploadedFileInterface
         $this->clientMediaType = $clientMediaType;
     }
 
-    protected function isOk() {
+    protected function isOk()
+    {
         return $this->error === UPLOAD_ERR_OK;
     }
 
@@ -235,6 +235,4 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->clientMediaType;
     }
-
-
 }

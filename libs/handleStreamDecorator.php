@@ -3,17 +3,15 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 4:42 PM
+ * Time: 4:42 PM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
 trait handleStreamDecorator
 {
-
     public function __construct(StreamInterface $stream)
     {
         $this->stream = $stream;
@@ -23,6 +21,7 @@ trait handleStreamDecorator
     {
         if ($name == 'stream') {
             $this->stream = $this->createStream();
+
             return $this->stream;
         }
 
@@ -35,11 +34,13 @@ trait handleStreamDecorator
             if ($this->isSeekable()) {
                 $this->seek(0);
             }
+
             return $this->getContents();
         } catch (\Exception $e) {
             // Really, PHP? https://bugs.php.net/bug.php?id=53648
             trigger_error('StreamDecorator::__toString exception: '
-                . (string) $e, E_USER_ERROR);
+                .(string) $e, E_USER_ERROR);
+
             return '';
         }
     }
@@ -126,5 +127,4 @@ trait handleStreamDecorator
     {
         throw new \BadMethodCallException('Not implemented');
     }
-
 }

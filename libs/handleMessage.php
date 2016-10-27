@@ -306,7 +306,7 @@ trait handleMessage
     {
         $this->headerNames = $this->headers = [];
 
-        foreach($headers as $header => $value) {
+        foreach ($headers as $header => $value) {
             if (!is_array($value)) {
                 $value = [$value];
             }
@@ -322,7 +322,6 @@ trait handleMessage
                 $this->headerNames[$normalized] = $header;
                 $this->headers[$header] = $value;
             }
-
         }
     }
 

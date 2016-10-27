@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 11:49 AM
+ * Time: 11:49 AM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\ResponseInterface;
 
@@ -88,8 +87,7 @@ class Response implements ResponseInterface
         $body = null,
         $version = '1.1',
         $reason = null
-    )
-    {
+    ) {
         $this->statusCode = (int) $status;
 
         if (($body !== '') && ($body !== null)) {
@@ -120,6 +118,7 @@ class Response implements ResponseInterface
             $reasonPhrase = self::$phrases[$new->statusCode];
         }
         $new->reasonPhrase = $reasonPhrase;
+
         return $new;
     }
 
@@ -127,6 +126,4 @@ class Response implements ResponseInterface
     {
         return $this->reasonPhrase;
     }
-
-
 }

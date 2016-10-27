@@ -3,15 +3,14 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 3:48 PM
+ * Time: 3:48 PM.
  */
 
 namespace PhMessage;
 
-
 use Psr\Http\Message\StreamInterface;
 
-class Stream implements StreamInterface 
+class Stream implements StreamInterface
 {
     protected $stream;
     protected $size;
@@ -26,14 +25,14 @@ class Stream implements StreamInterface
             'r' => true, 'w+' => true, 'r+' => true, 'x+' => true, 'c+' => true,
             'rb' => true, 'w+b' => true, 'r+b' => true, 'x+b' => true,
             'c+b' => true, 'rt' => true, 'w+t' => true, 'r+t' => true,
-            'x+t' => true, 'c+t' => true, 'a+' => true
+            'x+t' => true, 'c+t' => true, 'a+' => true,
         ],
         'write' => [
             'w' => true, 'w+' => true, 'rw' => true, 'r+' => true, 'x+' => true,
             'c+' => true, 'wb' => true, 'w+b' => true, 'r+b' => true,
             'x+b' => true, 'c+b' => true, 'w+t' => true, 'r+t' => true,
-            'x+t' => true, 'c+t' => true, 'a' => true, 'a+' => true
-        ]
+            'x+t' => true, 'c+t' => true, 'a' => true, 'a+' => true,
+        ],
     ];
 
     public function __construct($stream, $options = [])
@@ -56,7 +55,6 @@ class Stream implements StreamInterface
         $this->readable = isset(self::$readWriteHash['read'][$meta['mode']]);
         $this->writable = isset(self::$readWriteHash['write'][$meta['mode']]);
         $this->uri = $this->getMetadata('uri');
-
     }
 
     public function __get($name)
@@ -65,11 +63,11 @@ class Stream implements StreamInterface
             throw new \RuntimeException('The stream is detached');
         }
 
-        throw new \BadMethodCallException('No value for ' . $name);
+        throw new \BadMethodCallException('No value for '.$name);
     }
 
     /**
-     * Closes the stream when the destructed
+     * Closes the stream when the destructed.
      */
     public function __destruct()
     {
@@ -80,6 +78,7 @@ class Stream implements StreamInterface
     {
         try {
             $this->seek(0);
+
             return (string) stream_get_contents($this->stream);
         } catch (\Exception $e) {
             return '';
@@ -128,6 +127,7 @@ class Stream implements StreamInterface
         $stats = fstat($this->stream);
         if (isset($stats['size'])) {
             $this->size = $stats['size'];
+
             return $this->size;
         }
 
@@ -161,7 +161,7 @@ class Stream implements StreamInterface
             throw new \RuntimeException('Stream is not seekable');
         } elseif (fseek($this->stream, $offset, $whence) === -1) {
             throw new \RuntimeException('Unable to seek to stream position '
-                . $offset . ' with whence ' . var_export($whence, true));
+                .$offset.' with whence '.var_export($whence, true));
         }
     }
 
@@ -190,7 +190,6 @@ class Stream implements StreamInterface
         }
 
         return $result;
-
     }
 
     public function isReadable()

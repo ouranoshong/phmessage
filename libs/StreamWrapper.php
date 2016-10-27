@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/27/16
- * Time: 4:53 PM
+ * Time: 4:53 PM.
  */
 
 namespace PhMessage;
@@ -28,6 +28,7 @@ class StreamWrapper
      * @param StreamInterface $stream The stream to get a resource for
      *
      * @return resource
+     *
      * @throws \InvalidArgumentException if stream is not readable or writable
      */
     public static function getResource(StreamInterface $stream)
@@ -40,16 +41,16 @@ class StreamWrapper
             $mode = 'w';
         } else {
             throw new \InvalidArgumentException('The stream must be readable, '
-                . 'writable, or both.');
+                .'writable, or both.');
         }
 
         return fopen('phmessage://stream', $mode, null, stream_context_create([
-            'phmessage' => ['stream' => $stream]
+            'phmessage' => ['stream' => $stream],
         ]));
     }
 
     /**
-     * Registers the stream wrapper if needed
+     * Registers the stream wrapper if needed.
      */
     public static function register()
     {
@@ -102,25 +103,25 @@ class StreamWrapper
     public function stream_stat()
     {
         static $modeMap = [
-            'r'  => 33060,
+            'r' => 33060,
             'r+' => 33206,
-            'w'  => 33188
+            'w' => 33188,
         ];
 
         return [
-            'dev'     => 0,
-            'ino'     => 0,
-            'mode'    => $modeMap[$this->mode],
-            'nlink'   => 0,
-            'uid'     => 0,
-            'gid'     => 0,
-            'rdev'    => 0,
-            'size'    => $this->stream->getSize() ?: 0,
-            'atime'   => 0,
-            'mtime'   => 0,
-            'ctime'   => 0,
+            'dev' => 0,
+            'ino' => 0,
+            'mode' => $modeMap[$this->mode],
+            'nlink' => 0,
+            'uid' => 0,
+            'gid' => 0,
+            'rdev' => 0,
+            'size' => $this->stream->getSize() ?: 0,
+            'atime' => 0,
+            'mtime' => 0,
+            'ctime' => 0,
             'blksize' => 0,
-            'blocks'  => 0
+            'blocks' => 0,
         ];
     }
 }
