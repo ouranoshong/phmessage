@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 16-10-27
- * Time: 下午10:50
+ * Time: 下午10:50.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 

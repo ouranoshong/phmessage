@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 16-10-27
- * Time: 下午11:07
+ * Time: 下午11:07.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -35,11 +34,10 @@ class InflateStream implements StreamInterface
             // we have a filename, read until nil
             $filename_header_length = 1;
             while ($stream->read(1) !== chr(0)) {
-                $filename_header_length++;
+                ++$filename_header_length;
             }
         }
 
         return $filename_header_length;
     }
-
 }

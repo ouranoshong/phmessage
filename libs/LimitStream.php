@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 16-10-27
- * Time: 下午11:22
+ * Time: 下午11:22.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -19,13 +18,11 @@ class LimitStream implements StreamInterface
 
     protected $limit;
 
-
     public function __construct(
         StreamInterface $stream,
         $limit = -1,
         $offset = 0
-    )
-    {
+    ) {
         $this->stream = $stream;
         $this->setLimit($limit);
         $this->setOffset($offset);
@@ -49,7 +46,7 @@ class LimitStream implements StreamInterface
     public function getSize()
     {
         if (null === ($length = $this->stream->getSize())) {
-            return null;
+            return;
         } elseif ($this->limit == -1) {
             return $length - $this->offset;
         } else {
@@ -123,5 +120,4 @@ class LimitStream implements StreamInterface
 
         return '';
     }
-
 }

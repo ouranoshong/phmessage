@@ -98,7 +98,7 @@ class Stream implements StreamInterface
     public function detach()
     {
         if (!isset($this->stream)) {
-            return null;
+            return;
         }
 
         $result = $this->stream;
@@ -116,7 +116,7 @@ class Stream implements StreamInterface
         }
 
         if (!isset($this->stream)) {
-            return null;
+            return;
         }
 
         // Clear the stat cache if the stream has a URI
@@ -131,7 +131,7 @@ class Stream implements StreamInterface
             return $this->size;
         }
 
-        return null;
+        return;
     }
 
     public function tell()
