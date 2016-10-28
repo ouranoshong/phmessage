@@ -21,13 +21,13 @@ class Uri implements UriInterface
     protected static $charSubDelims = '!\$&\'\(\)\*\+,;=';
     protected static $replaceQuery = ['=' => '%3D', '&' => '%26'];
 
-    protected $scheme;
-    protected $userInfo;
-    protected $host;
+    protected $scheme = '';
+    protected $userInfo = '';
+    protected $host = '';
     protected $port;
-    protected $path;
-    protected $query;
-    protected $fragment;
+    protected $path = '';
+    protected $query = '';
+    protected $fragment = '';
 
     public function __construct($uri = '')
     {
@@ -62,7 +62,7 @@ class Uri implements UriInterface
             ? $this->filterQueryAndFragment($parts['fragment'])
             : '';
         if (isset($parts['pass'])) {
-            $this->userInfo .= ':'.$parts['pass'];
+            $this->userInfo .= ':' . $parts['pass'];
         }
     }
 
@@ -87,10 +87,10 @@ class Uri implements UriInterface
     protected function filterPort($port)
     {
         if ($port === null) {
-            return;
+            return null;
         }
 
-        $port = (int) $port;
+        $port = (int)$port;
         if (1 > $port || 0xffff < $port) {
             throw new \InvalidArgumentException(
                 sprintf('Invalid port: %d. Must be between 1 and 65535', $port)
@@ -102,7 +102,7 @@ class Uri implements UriInterface
 
     protected static function isNonStandardPort($scheme, $port)
     {
-        return !isset(self::$schemes[$scheme]) || $port !== self::$schemes;
+        return !isset(self::$schemes[$scheme]) || $port !== self::$schemes[$scheme];
     }
 
     protected function filterPath($path)
@@ -112,7 +112,7 @@ class Uri implements UriInterface
         }
 
         return preg_replace_callback(
-            '/(?:[^'.self::$charUnreserved.self::$charSubDelims.'%:@\/]++|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\/]++|%(?![A-Fa-f0-9]{2}))/',
             [$this, 'rawurlencodeMatchZero'],
             $path
         );
@@ -125,7 +125,7 @@ class Uri implements UriInterface
         }
 
         return preg_replace_callback(
-            '/(?:[^'.self::$charUnreserved.self::$charSubDelims.'%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/',
             [$this, 'rawurlencodeMatchZero'],
             $query
         );
@@ -146,24 +146,24 @@ class Uri implements UriInterface
         $uri = '';
 
         if ($scheme != '') {
-            $uri .= $scheme.':';
+            $uri .= $scheme . ':';
         }
 
         if ($authority != '') {
-            $uri .= '//'.$authority;
+            $uri .= '//' . $authority;
         }
 
         if ($path != '') {
             if ($path[0] !== '/') {
                 if ($authority != '') {
                     // If the path is rootless and an authority is present, the path MUST be prefixed by "/"
-                    $path = '/'.$path;
+                    $path = '/' . $path;
                 }
             } elseif (isset($path[1]) && $path[1] === '/') {
                 if ($authority == '') {
                     // If the path is starting with more than one "/" and no authority is present, the
                     // starting slashes MUST be reduced to one.
-                    $path = '/'.ltrim($path, '/');
+                    $path = '/' . ltrim($path, '/');
                 }
             }
 
@@ -171,11 +171,11 @@ class Uri implements UriInterface
         }
 
         if ($query != '') {
-            $uri .= '?'.$query;
+            $uri .= '?' . $query;
         }
 
         if ($fragment != '') {
-            $uri .= '#'.$fragment;
+            $uri .= '#' . $fragment;
         }
 
         return $uri;
@@ -194,11 +194,11 @@ class Uri implements UriInterface
 
         $authority = $this->host;
         if ($this->userInfo != '') {
-            $authority = $this->userInfo.'@'.$authority;
+            $authority = $this->userInfo . '@' . $authority;
         }
 
         if ($this->port !== null) {
-            $authority .= ':'.$this->port;
+            $authority .= ':' . $this->port;
         }
 
         return $authority;
@@ -253,7 +253,7 @@ class Uri implements UriInterface
     {
         $info = $user;
         if ($password != '') {
-            $info .= ':'.$password;
+            $info .= ':' . $password;
         }
 
         if ($this->userInfo === $info) {
@@ -374,7 +374,7 @@ class Uri implements UriInterface
         $key = strtr($key, self::$replaceQuery);
 
         if ($value !== null) {
-            $result[] = $key.'='.strtr($value, self::$replaceQuery);
+            $result[] = $key . '=' . strtr($value, self::$replaceQuery);
         } else {
             $result[] = $key;
         }
@@ -421,7 +421,7 @@ class Uri implements UriInterface
         if (substr($path, 0, 1) === '/' &&
             substr($newPath, 0, 1) !== '/'
         ) {
-            $newPath = '/'.$newPath;
+            $newPath = '/' . $newPath;
         }
 
         // Add the trailing slash if necessary
@@ -438,7 +438,7 @@ class Uri implements UriInterface
             $rel = new self($rel);
         }
 
-        if ((string) $rel === '') {
+        if ((string)$rel === '') {
             // we can simply return the same base URI instance for this same-document reference
             return $base;
         }
@@ -461,13 +461,13 @@ class Uri implements UriInterface
                     $targetPath = $rel->getPath();
                 } else {
                     if ($targetAuthority != '' && $base->getPath() === '') {
-                        $targetPath = '/'.$rel->getPath();
+                        $targetPath = '/' . $rel->getPath();
                     } else {
                         $lastSlashPos = strrpos($base->getPath(), '/');
                         if ($lastSlashPos === false) {
                             $targetPath = $rel->getPath();
                         } else {
-                            $targetPath = substr($base->getPath(), 0, $lastSlashPos + 1).$rel->getPath();
+                            $targetPath = substr($base->getPath(), 0, $lastSlashPos + 1) . $rel->getPath();
                         }
                     }
                 }
