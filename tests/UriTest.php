@@ -363,5 +363,16 @@ class UriTest extends TestCase
         $uri = Uri::withoutQueryValue($uri, 'E%3Dmc%5e2');
         $this->assertSame('foo=bar', $uri->getQuery(), 'Handles key in encoded form');
     }
+
+    public function testSchemeIsNormalizedLowercase()
+    {
+        $uri = new Uri('HTTPS://example.com');
+        $this->assertSame('https', $uri->getScheme());
+        $this->assertSame('https://example.com', (string) $uri);
+
+        $uri = (new Uri('//example.com'))->withScheme('HTTPS');
+        $this->assertSame('https', $uri->getScheme());
+        $this->assertSame('https://example.com', (string) $uri);
+    }
     
 }
