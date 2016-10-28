@@ -10,6 +10,13 @@ namespace PhMessage;
 
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * Class handleStreamDecorator
+ *
+ * @package PhMessage
+ *
+ * @property StreamInterface stream
+ */
 trait handleStreamDecorator
 {
     public function __construct(StreamInterface $stream)
