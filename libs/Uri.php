@@ -31,7 +31,7 @@ class Uri implements UriInterface
 
     public function __construct($uri = '')
     {
-        if ($uri) {
+        if ($uri != '') {
             $parts = parse_url($uri);
             if ($parts === false) {
                 throw new \InvalidArgumentException("Unable to parse URI: $uri");
@@ -75,10 +75,6 @@ class Uri implements UriInterface
         return strtolower($scheme);
     }
 
-    protected function filterUserInfo()
-    {
-    }
-
     protected function filterHost($host)
     {
         if (!is_string($host)) {
@@ -102,6 +98,11 @@ class Uri implements UriInterface
         }
 
         return self::isNonStandardPort($this->scheme, $port) ? $port : null;
+    }
+
+    protected static function isNonStandardPort($scheme, $port)
+    {
+        return !isset(self::$schemes[$scheme]) || $port !== self::$schemes;
     }
 
     protected function filterPath($path)
