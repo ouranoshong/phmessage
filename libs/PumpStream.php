@@ -3,15 +3,14 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/28/16
- * Time: 9:44 AM
+ * Time: 9:44 AM.
  */
 
 namespace PhMessage;
 
-
 use Psr\Http\Message\StreamInterface;
 
-class PumpStream implements StreamInterface 
+class PumpStream implements StreamInterface
 {
     /** @var callable */
     protected $source;
@@ -143,6 +142,7 @@ class PumpStream implements StreamInterface
                 $data = call_user_func($this->source, $length);
                 if ($data === false || $data === null) {
                     $this->source = null;
+
                     return;
                 }
                 $this->buffer->write($data);

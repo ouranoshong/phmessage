@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/28/16
- * Time: 2:49 PM
+ * Time: 2:49 PM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -36,7 +35,5 @@ class DroppingStream implements StreamInterface
         }
 
         return $this->stream->write(substr($string, 0, $diff));
-
     }
-
 }

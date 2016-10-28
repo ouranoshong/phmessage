@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/28/16
- * Time: 3:14 PM
+ * Time: 3:14 PM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -19,7 +18,7 @@ class MultipartStream implements StreamInterface
 
     public function __construct(array $elements = [], $boundary = null)
     {
-        $this->boundary = $boundary ? : uniqid();
+        $this->boundary = $boundary ?: uniqid();
         $this->stream = $this->createStream($elements);
     }
 
@@ -36,20 +35,18 @@ class MultipartStream implements StreamInterface
     public function getHeaders(array $headers)
     {
         $str = '';
-        foreach($headers as $key=> $value)
-        {
+        foreach ($headers as $key => $value) {
             $str .= "{$key}: $value\r\n";
         }
 
-        return "--{$this->boundary}\r\n". trim($str). "\r\n\r\n";
+        return "--{$this->boundary}\r\n".trim($str)."\r\n\r\n";
     }
 
     protected function createStream(array $elements)
     {
         $stream = new AppendStream();
 
-        foreach($elements as $element)
-        {
+        foreach ($elements as $element) {
             $this->addElement($stream, $element);
         }
 
@@ -60,7 +57,7 @@ class MultipartStream implements StreamInterface
 
     protected function addElement(AppendStream $stream, array $element)
     {
-        foreach(['contents', 'name'] as $key) {
+        foreach (['contents', 'name'] as $key) {
             if (!array_key_exists($key, $element)) {
                 throw new \InvalidArgumentException("A '{$key}' key is required");
             }
@@ -87,7 +84,8 @@ class MultipartStream implements StreamInterface
         $stream->addStream(stream_for("\r\n"));
     }
 
-    protected function createElement($name, $stream, $filename, array $headers) {
+    protected function createElement($name, $stream, $filename, array $headers)
+    {
         $disposition = $this->getHeader($headers, 'content-disposition');
         if (!$disposition) {
             $headers['Content-Disposition'] = ($filename === '0' || $filename)
@@ -116,7 +114,8 @@ class MultipartStream implements StreamInterface
         return [$stream, $headers];
     }
 
-    protected function getHeader(array $headers, $key){
+    protected function getHeader(array $headers, $key)
+    {
         $lowercaseHeader = strtolower($key);
         foreach ($headers as $k => $v) {
             if (strtolower($k) === $lowercaseHeader) {
@@ -126,5 +125,4 @@ class MultipartStream implements StreamInterface
 
         return null;
     }
-
 }

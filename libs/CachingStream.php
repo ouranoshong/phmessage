@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/28/16
- * Time: 2:17 PM
+ * Time: 2:17 PM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -18,7 +17,6 @@ class CachingStream implements StreamInterface
     protected $remoteStream;
 
     protected $skipReadBytes = 0;
-
 
     public function __construct(
         StreamInterface $stream,
@@ -129,5 +127,4 @@ class CachingStream implements StreamInterface
 
         return $this->tell();
     }
-
 }

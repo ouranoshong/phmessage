@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/28/16
- * Time: 2:26 PM
+ * Time: 2:26 PM.
  */
 
 namespace PhMessage;
@@ -20,7 +20,7 @@ class FnStream implements StreamInterface
     protected static $slots = [
         '__toString', 'close', 'detach', 'rewind',
         'getSize', 'tell', 'eof', 'isSeekable', 'seek', 'isWritable', 'write',
-        'isReadable', 'read', 'getContents', 'getMetadata'
+        'isReadable', 'read', 'getContents', 'getMetadata',
     ];
 
     public function __construct(array $methods)
@@ -35,7 +35,7 @@ class FnStream implements StreamInterface
     public function __get($name)
     {
         throw new \BadMethodCallException(str_replace('_fn_', '', $name)
-            . '() is not implemented in the FnStream');
+            .'() is not implemented in the FnStream');
     }
 
     public function __destruct()
@@ -47,8 +47,7 @@ class FnStream implements StreamInterface
 
     public static function decorate(StreamInterface $stream, array $methods)
     {
-        foreach (array_diff(self::$slots, array_keys($methods)) as $diff)
-        {
+        foreach (array_diff(self::$slots, array_keys($methods)) as $diff) {
             $methods['diff'] = [$stream, $diff];
         }
 

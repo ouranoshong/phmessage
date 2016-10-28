@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hong
  * Date: 10/28/16
- * Time: 9:46 AM
+ * Time: 9:46 AM.
  */
 
 namespace PhMessage;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -33,7 +32,7 @@ class BufferStream implements StreamInterface
 
     public function detach()
     {
-       $this->buffer = '';
+        $this->buffer = '';
     }
 
     public function getSize()

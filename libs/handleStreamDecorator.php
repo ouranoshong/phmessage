@@ -11,9 +11,8 @@ namespace PhMessage;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Class handleStreamDecorator
+ * Class handleStreamDecorator.
  *
- * @package PhMessage
  *
  * @property StreamInterface stream
  */
