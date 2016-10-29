@@ -9,6 +9,7 @@
 namespace Tests\PhMessage;
 
 
+use PhMessage\NoSeekStream;
 use PhMessage\Stream;
 use PHPUnit\Framework\TestCase;
 
@@ -46,5 +47,121 @@ class StreamTest extends TestCase
         $stream = new Stream($handle);
         unset($stream);
         $this->assertFalse(is_resource($handle));
+    }
+
+    public function testConvertsToString()
+    {
+
+        $handle = fopen('php://temp', 'w+');
+        fwrite($handle, 'data');
+        $stream = new Stream($handle);
+        $this->assertEquals('data', (string) $stream);
+        $this->assertEquals('data', (string) $stream);
+        $stream->close();
+
+    }
+
+    public function testChecksEof()
+    {
+        $handle = fopen('php://temp', 'w+');
+        fwrite($handle, 'data');
+
+        $stream = new Stream($handle);
+        $this->assertFalse($stream->eof());
+        $stream->read(4);
+        $this->assertTrue($stream->eof());
+        $stream->close();
+    }
+
+    public function testGetSize()
+    {
+        $size = filesize(__FIEL__);
+        $handle = fopen(__FILE__, 'r');
+        $stream = new Stream($handle);
+
+        $this->assertEquals($size, $stream->getSize());
+
+        $this->assertEquals($size, $stream->getSize());
+
+        $stream->close();
+    }
+
+    public function testEnsuresSizeIsConsistent()
+    {
+        $h = fopen('php://temp', 'w+');
+        $this->assertEquals(3, fwrite($h, 'foo'));
+        $stream = new Stream($h);
+        $this->assertEquals(3, $stream->getSize());
+        $this->assertEquals(4, $stream->write('test'));
+        $this->assertEquals(7, $stream->getSize());
+        $this->assertEquals(7, $stream->getSize());
+        $stream->close();
+    }
+
+    public function testProvidesStreamPosition()
+    {
+        $handle = fopen('php://temp', 'w+');
+        $stream = new Stream($handle);
+
+        $this->assertEquals(0, $stream->tell());
+        $stream->write('foo');
+        $this->assertEquals(3, $stream->tell());
+        $stream->seek(1);
+        $this->assertEquals(1, $stream->tell());
+        $this->assertSame(ftell($handle), $stream->tell());
+
+        $stream->close();
+    }
+
+    public function testCanDetachStream()
+    {
+        $r = fopen('php://temp', 'w+');
+        $stream = new Stream($r);
+        $stream->write('foo');
+        $this->assertTrue($stream->isReadable());
+        $this->assertSame($r, $stream->detach());
+        $stream->detach();
+
+        $this->assertFalse($stream->isReadable());
+        $this->assertFalse($stream->isWritable());
+        $this->assertFalse($stream->isSeekable());
+
+        $throws = function (callable $fn) use ($stream) {
+            try {
+                $fn($stream);
+                $this->fail();
+            } catch (\Exception $e) {}
+        };
+
+        $throws(function ($stream) { $stream->read(10); });
+        $throws(function ($stream) { $stream->write('bar'); });
+        $throws(function ($stream) { $stream->seek(10); });
+        $throws(function ($stream) { $stream->tell(); });
+        $throws(function ($stream) { $stream->eof(); });
+        $throws(function ($stream) { $stream->getSize(); });
+        $throws(function ($stream) { $stream->getContents(); });
+        $this->assertSame('', (string) $stream);
+        $stream->close();
+    }
+
+    public function testCloseClearProperties()
+    {
+        $handle = fopen('php://temp', 'r+');
+        $stream = new Stream($handle);
+        $stream->close();
+
+        $this->assertFalse($stream->isSeekable());
+        $this->assertFalse($stream->isReadable());
+        $this->assertFalse($stream->isWritable());
+        $this->assertNull($stream->getSize());
+        $this->assertEmpty($stream->getMetadata());
+    }
+
+    public function testDoseNotThrowInToString(){
+
+        $s = \PhMessage\stream_for('foo');
+        $s = new NoSeekStream($s);
+        $this->assertEquals('foo', (string) $s);
+
     }
 }
