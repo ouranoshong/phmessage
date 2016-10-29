@@ -6,5 +6,5 @@
  * Time: 11:27 AM.
  */
 if (!function_exists('PhMessage\str')) {
-    return __DIR__.'/functions.php';
+    require __DIR__.'/functions.php';
 }

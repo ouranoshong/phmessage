@@ -13,10 +13,10 @@
         "psr/http-message": "^1.0"
     } ,
     "autoload": {
+        "files": ["libs/functions_include.php"],
         "psr-4": {
             "PhMessage\\": "./libs"
-        },
-        "files": ["libs/functions_include.php"]
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "^5.6"

@@ -6,6 +6,8 @@
  * Time: 3:45 PM
  */
 
+namespace Tests\PhMessage;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 class HasToString

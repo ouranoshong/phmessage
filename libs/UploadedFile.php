@@ -102,7 +102,7 @@ class UploadedFile implements UploadedFileInterface
             );
         }
 
-        if (false === is_array($error, self::$errors)) {
+        if (false === in_array($error, UploadedFile::$errors)) {
             throw new \InvalidArgumentException(
                 'Invalid error status for UploadedFile'
             );
@@ -135,7 +135,7 @@ class UploadedFile implements UploadedFileInterface
     protected function setClientFilename($clientFilename)
     {
         if (false === $this->isStringOrNull($clientFilename)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'Upload file client filename must be a string or null'
             );
         }
