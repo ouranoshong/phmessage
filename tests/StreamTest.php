@@ -75,7 +75,7 @@ class StreamTest extends TestCase
 
     public function testGetSize()
     {
-        $size = filesize(__FIEL__);
+        $size = filesize(__FILE__);
         $handle = fopen(__FILE__, 'r');
         $stream = new Stream($handle);
 
