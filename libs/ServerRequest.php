@@ -43,8 +43,13 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     protected $uploadedFiles = [];
 
-    public function __construct($method, $uri, array $headers, $body, $version = '1.1', array $serverParams = [])
-    {
+    public function __construct(
+        $method, $uri,
+        array $headers = [],
+        $body = null,
+        $version = '1.1',
+        array $serverParams = []
+    ) {
         $this->serverParams = $serverParams;
 
         parent::__construct($method, $uri, $headers, $body, $version);

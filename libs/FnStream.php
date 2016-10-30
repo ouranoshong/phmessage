@@ -11,7 +11,8 @@ namespace PhMessage;
 use Psr\Http\Message\StreamInterface;
 
 /**
- *  @property StreamInterface _fn___toString
+ *  @property FnStream _fn___toString
+ *  @property FnStream _fn_close
  */
 class FnStream implements StreamInterface
 {
@@ -48,7 +49,7 @@ class FnStream implements StreamInterface
     public static function decorate(StreamInterface $stream, array $methods)
     {
         foreach (array_diff(self::$slots, array_keys($methods)) as $diff) {
-            $methods['diff'] = [$stream, $diff];
+            $methods[$diff] = [$stream, $diff];
         }
 
         return new self($methods);

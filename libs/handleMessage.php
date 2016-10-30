@@ -223,7 +223,7 @@ trait handleMessage
         $new = clone $this;
         if (isset($new->headerNames[$normalized])) {
             $header = $this->headerNames[$normalized];
-            $new->headers[$header] = array_merge($this->headers[$name], $value);
+            $new->headers[$header] = array_merge($this->headers[$header], $value);
         } else {
             $new->headerNames[$normalized] = $name;
             $new->headers[$name] = $value;
