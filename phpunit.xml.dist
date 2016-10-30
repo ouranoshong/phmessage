@@ -16,6 +16,7 @@
             <directory suffix=".php">libs/</directory>
             <exclude>
                 <directory suffix="Interface.php">libs/</directory>
+                <file>libs/functions_include.php</file>
             </exclude>
         </whitelist>
     </filter>
