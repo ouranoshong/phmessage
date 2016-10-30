@@ -7,6 +7,7 @@
  */
 
 namespace PhMessage;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Converts phmessage streams into PHP stream resources.

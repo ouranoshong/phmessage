@@ -22,7 +22,7 @@ class BufferStream implements StreamInterface
 
     public function __toString()
     {
-        $this->getContents();
+        return $this->getContents();
     }
 
     public function close()
@@ -83,7 +83,7 @@ class BufferStream implements StreamInterface
 
     public function isReadable()
     {
-        return false;
+        return true;
     }
 
     public function read($length)

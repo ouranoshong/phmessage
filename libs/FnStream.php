@@ -11,8 +11,8 @@ namespace PhMessage;
 use Psr\Http\Message\StreamInterface;
 
 /**
- *  @property FnStream _fn___toString
- *  @property FnStream _fn_close
+ *  @property FnStream (callable)_fn___toString
+ *  @property FnStream (callable)_fn_close
  */
 class FnStream implements StreamInterface
 {
