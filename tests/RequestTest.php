@@ -8,7 +8,6 @@
 
 namespace Tests\PhMessage;
 
-
 use PhMessage\FnStream;
 use PhMessage\Request;
 use PhMessage\Uri;
