@@ -635,3 +635,32 @@ function _caseless_remove($keys, array $data)
 
     return $result;
 }
+
+/**
+ * UTF-8 aware parse_url() replacement.
+ *
+ * @return array
+ * @param $url string
+ */
+function mb_parse_url($url)
+{
+    $enc_url = preg_replace_callback(
+        '%[^:/@?&=#]+%usD',
+        function ($matches)
+        {
+            return urlencode($matches[0]);
+        },
+        $url
+    );
+
+    $parts = parse_url($enc_url);
+
+    if (false === $parts) return false;
+
+    foreach((array)$parts as $name => $value)
+    {
+        $parts[$name] = urldecode($value);
+    }
+
+    return $parts;
+}

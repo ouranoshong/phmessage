@@ -638,4 +638,18 @@ class FunctionTest extends TestCase
         $this->assertTrue($r2 instanceof ServerRequestInterface);
     }
 
+    public function testCanParseUTF8Url()
+    {
+        $uri = '/€?€#€';
+        $output = \PhMessage\mb_parse_url($uri);
+
+        $this->assertArrayHasKey('path', $output);
+        $this->assertArrayHasKey('query', $output);
+        $this->assertArrayHasKey('fragment', $output);
+
+        $this->assertSame('/€', $output['path']);
+        $this->assertSame('€', $output['query']);
+        $this->assertSame('€', $output['fragment']);
+    }
+
 }

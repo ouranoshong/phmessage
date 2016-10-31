@@ -32,7 +32,7 @@ class Uri implements UriInterface
     public function __construct($uri = '')
     {
         if ($uri != '') {
-            $parts = parse_url($uri);
+            $parts = mb_parse_url($uri);
             if ($parts === false) {
                 throw new \InvalidArgumentException("Unable to parse URI: $uri");
             }
